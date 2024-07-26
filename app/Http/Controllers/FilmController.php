@@ -35,7 +35,8 @@ class FilmController extends Controller
      */
     public function create()
     {
-
+        $genres = Genre::all();
+        return view('film.create', compact('genres'));
     }
 
     /**
@@ -43,7 +44,8 @@ class FilmController extends Controller
      */
     public function store(StoreFilmRequest $request)
     {
-
+        Film::create($request->validated());
+        return redirect()->route('film.index')->with('success', 'Berhasil menambahkan data FILM');
     }
 
     /**

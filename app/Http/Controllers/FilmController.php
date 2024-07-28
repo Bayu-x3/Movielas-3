@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\{
@@ -18,16 +19,20 @@ class FilmController extends Controller
      */
     public function index()
     {
+        $films = Film::all();
+        $genres = Genre::all();
+        return view('film.index', compact('films','genres'));
     }
-
+    
     public function movies()
     {
+        //
         $genreFilm = null;
-        $films = Film::select('id', 'title', 'poster', 'year')
-            ->orderByDesc('year')
-            ->orderBy('created_at', 'asc')
-            ->paginate(18);
-        return view('components.movies', compact('films', 'genreFilm'));
+        $films = Film::select('id','title', 'poster','year')
+                ->orderByDesc('year')
+                ->OrderBy('created_at', 'asc')
+                ->paginate(18);
+        return view('components/movies', compact('films', 'genreFilm'));
     }
 
     /**
@@ -35,8 +40,7 @@ class FilmController extends Controller
      */
     public function create()
     {
-        $genres = Genre::all();
-        return view('film.create', compact('genres'));
+        return view('film.create');
     }
 
     /**
@@ -44,8 +48,11 @@ class FilmController extends Controller
      */
     public function store(StoreFilmRequest $request)
     {
-        Film::create($request->validated());
-        return redirect()->route('film.index')->with('success', 'Berhasil menambahkan data FILM');
+        $film = new Film();
+        $film->title = $request->input('title');
+        $film->sinopsis = $request->input('sinopsis');
+        $film->year = $request->input('year');
+        $film->genre = $request->input('genre');
     }
 
     /**
@@ -53,23 +60,24 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
-        $filmByGenre = Film::select('id', 'title', 'poster', 'year', 'sinopsis')
-            ->where('genre_id', $film->genre_id)
-            ->orderBy('created_at', 'asc')
-            ->limit(7)
-            ->get();
-        $filmByRelease = Film::select('id', 'title', 'poster', 'year')
-            ->where('year', Carbon::now()->format('Y'))
-            ->orderBy('created_at', 'asc')
-            ->limit(9)
-            ->get();
-        $comments = Kritik::select('comment', 'user_id')
-            ->where('film_id', $film->id)
-            ->orderBy('created_at', 'asc')
-            ->limit(10)
-            ->get();
-        $perans = Peran::where('film_id', $film->id)->get();
-        return view('components.movie-show', compact('film', 'filmByGenre', 'filmByRelease', 'comments', 'perans'));
+        //
+        $filmByGenre    = Film::select('id','title', 'poster','year', 'sinopsis')
+                        ->where('genre_id', '=', $film->genre_id)
+                        ->OrderBy('created_at', 'asc')
+                        ->limit(7)
+                        ->get();
+        $filmByRelease  = Film::select('id','title', 'poster','year')
+                        ->where('year', '=', Carbon::now()->format('Y'))
+                        ->OrderBy('created_at', 'asc')
+                        ->limit(9)
+                        ->get();
+        $comments        = Kritik::select('comment', 'user_id')
+                        ->where('film_id', '=', $film->id)
+                        ->orderBy('created_at', 'asc')
+                        ->limit(10)
+                        ->get();
+        $perans         = Peran::all()->where('film_id', '=', $film->id);
+        return view('components.movie-show', compact('film','filmByGenre','filmByRelease','comments', 'perans'));
     }
 
     /**
@@ -77,7 +85,7 @@ class FilmController extends Controller
      */
     public function edit(Film $film)
     {
-
+        //
     }
 
     /**
@@ -85,7 +93,7 @@ class FilmController extends Controller
      */
     public function update(UpdateFilmRequest $request, Film $film)
     {
-       
+        //
     }
 
     /**
@@ -93,41 +101,37 @@ class FilmController extends Controller
      */
     public function destroy(Film $film)
     {
-
+        //
     }
-    
 
     public function movieHome()
     {
-        $films = Film::select('id', 'title', 'poster', 'year')
-            ->orderBy('created_at', 'asc')
-            ->limit(9)
-            ->get();
-        $filmFutured = Film::select('id', 'title', 'poster', 'year')
-            ->orderByDesc('year')
-            ->orderBy('created_at', 'asc')
-            ->limit(6)
-            ->get();
-        $filmRecentAdded = Film::select('id', 'title', 'poster', 'year')
-            ->orderByDesc('created_at', 'asc')
-            ->limit(6)
-            ->get();
-        $filmSlidey = Film::select('title', 'poster', 'sinopsis')
-            ->orderByDesc('year')
-            ->orderBy('created_at', 'asc')
-            ->limit(6)
-            ->get();
-        return view('components.home', compact('filmSlidey', 'films', 'filmFutured', 'filmRecentAdded'));
+        $films = Film::select('id','title', 'poster','year')
+                ->OrderBy('created_at', 'asc')
+                ->limit(9)->get();
+        $filmFutured = Film::select('id','title', 'poster','year')
+                        ->orderByDesc('year')
+                        ->OrderBy('created_at', 'asc')
+                        ->limit(6)->get();
+        $filmRecentAdded = Film::select('id','title', 'poster','year')
+                            ->orderByDesc('created_at', 'asc')
+                            ->limit(6)->get();
+        $filmSlidey = Film::select('title', 'poster','sinopsis')
+                        ->orderByDesc('year')
+                        ->OrderBy('created_at', 'asc')
+                        ->limit(6)->get();
+        return view('components/home', compact('filmSlidey','films','filmFutured','filmRecentAdded'));
     }
 
     public function moviesByGenre($genre)
     {
-        $genreFilm = Genre::where('id', $genre)->first();
-        $films = Film::select('id', 'title', 'poster', 'year')
-            ->where('genre_id', $genre)
-            ->orderByDesc('year')
-            ->orderBy('created_at', 'asc')
-            ->paginate(18);
-        return view('components.movies', compact('films', 'genreFilm'));
+        //
+        $genreFilm = Genre::where('id', '=', $genre)->first();
+        $films = Film::select('id','title', 'poster','year')
+                ->where('genre_id', '=', $genre)
+                ->orderByDesc('year')
+                ->OrderBy('created_at', 'asc')
+                ->paginate(18);
+        return view('components/movies', compact('films','genreFilm'));
     }
 }

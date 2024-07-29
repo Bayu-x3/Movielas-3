@@ -82,6 +82,8 @@ class FilmController extends Controller
      */
     public function edit(Film $film)
     {
+        # Klarifikasi Petani Kode = Rania
+        # Tadi salah login GitBash
         $genres = Genre::all();
         return view('film.edit', compact('film','genres'));
     }

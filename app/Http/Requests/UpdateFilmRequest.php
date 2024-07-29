@@ -21,6 +21,9 @@ class UpdateFilmRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        # Klarifikasi Petani Kode = Rania
+        # Tadi salah login GitBash
         return [
             'title'=>'required',
             'sinopsis'=>'required',

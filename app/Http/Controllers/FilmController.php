@@ -46,13 +46,10 @@ class FilmController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFilmRequest $request)
+   public function store(StoreFilmRequest $request)
     {
-        $film = new Film();
-        $film->title = $request->input('title');
-        $film->sinopsis = $request->input('sinopsis');
-        $film->year = $request->input('year');
-        $film->genre = $request->input('genre');
+        Film::create($request->validated());
+        return redirect()->route('film.index')->with('success', 'Berhasil menambahkan data FILM');
     }
 
     /**

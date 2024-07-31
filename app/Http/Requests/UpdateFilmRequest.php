@@ -22,14 +22,12 @@ class UpdateFilmRequest extends FormRequest
     public function rules(): array
     {
 
-        # Klarifikasi Petani Kode = Rania
-        # Tadi salah login GitBash
         return [
             'title'=>'required',
             'sinopsis'=>'required',
             'year'=>'required',
             'poster'=>'required',
-            'genre_id'=>'required'
+            'genre_id'=>'required|exists:genres,id'
         ];
     }
 }

@@ -23,7 +23,7 @@ class FilmController extends Controller
         $genres = Genre::all();
         return view('film.index', compact('films','genres'));
     }
-    
+
     public function movies()
     {
         //
@@ -93,7 +93,8 @@ class FilmController extends Controller
      */
     public function update(UpdateFilmRequest $request, Film $film)
     {
-        //
+        $film->update($request->validated());
+        return redirect()->route('film.index')->with('success', 'Berhasil memperbarui data FILM');
     }
 
     /**

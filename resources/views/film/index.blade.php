@@ -7,7 +7,7 @@
     @include('templates.component.header')
     @include('templates.component.login')
     @include('templates.component.navbar')
-    
+
     <div class="general_social_icons">
         <nav class="social">
             <ul>
@@ -22,7 +22,7 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Film List</h1>
         <a href="{{ route('film.create') }}" class="btn btn-success mb-3">Tambah Film</a>
-        
+
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -47,10 +47,11 @@
                         <td>
                             <!-- Example actions; adjust as needed -->
                             <a href="{{ route('film.show', $film->id) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('film.edit', $film->id) }}" class="btn btn-warning btn-sm">Edit</a>
                             <form action="{{ route('film.destroy', $film->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm">DELETE</button>    
+                                <button type="submit" class="btn btn-sm">DELETE</button>
                                 </form>
                         </td>
                     </tr>
